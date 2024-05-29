@@ -1,0 +1,6 @@
+{
+    "main": "gendiff.js",
+    "dependencies": {
+        "commander": "^12.1.0"
+    }
+}
