@@ -5,7 +5,8 @@
         "report-coverage": "codeclimate-test-reporter < coverage/lcov.info"
     },
     "dependencies": {
-        "commander": "^12.1.0"
+        "commander": "^12.1.0",
+        "js-yaml": "^4.1.0"
     },
     "devDependencies": {
         "@eslint/create-config": "^1.0.0",
