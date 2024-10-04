@@ -2,7 +2,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import yaml from 'js-yaml';
 
-export const parseData = (filePath) => {
+const parseData = (filePath) => {
   const ext = path.extname(filePath);
   const data = fs.readFileSync(filePath, 'utf-8');
 
@@ -14,3 +14,5 @@ export const parseData = (filePath) => {
   }
   throw new Error(`Unsupported file format: ${ext}`);
 };
+
+export default parseData;
