@@ -1,23 +1,9 @@
-import * as fs from 'node:fs';
-import * as path from 'node:path';
-import yaml from 'js-yaml';
+import pkg from 'lodash';
+import { parseData } from './parsers.js';
 
-export const parseData = (filePath) => {
-  const ext = path.extname(filePath);
-  const data = fs.readFileSync(filePath, 'utf-8');
-  if (ext === '.json') {
-    return JSON.parse(data);
-  }
-  if (ext === '.yml' || ext === '.yaml') {
-    return yaml.load(data);
-  }
-  throw new Error(`Unsupported file format: ${ext}`);
-};
+const { union, has } = pkg;
 
-export const genDiff = (filePath1, filePath2) => {
-  const data1 = parseData(filePath1);
-  const data2 = parseData(filePath2);
-
+export const genDiff = (data1, data2) => {
   const keys = union(Object.keys(data1), Object.keys(data2)).sort();
   const result = keys.map((key) => {
     if (!has(data2, key)) {

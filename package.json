@@ -1,12 +1,17 @@
 {
+    "name": "hexlet-code",
     "main": "gendiff.js",
+    "type": "module",
+    "bin": "bin/gendiff.js",
     "scripts": {
         "test": "jest --coverage",
         "report-coverage": "codeclimate-test-reporter < coverage/lcov.info"
     },
     "dependencies": {
-        "commander": "^12.1.0",
-        "js-yaml": "^4.1.0"
+        "commander": "^8.0.0",
+        "gendiff": "^1.0.0",
+        "js-yaml": "^4.1.0",
+        "lodash": "^4.17.21"
     },
     "devDependencies": {
         "@eslint/create-config": "^1.0.0",
