@@ -9,5 +9,14 @@ const parsers = {
 
 export const parseData = (path) => {
   const ext = Object.keys(parsers).find(ext => path.endsWith(ext));
-  return ext ? parsers[ext](readFileSync(path, 'utf-8')) : null;
+  if (!ext) {
+    throw new Error('Unsupported file extension');
+  }
+
+  try {
+    const data = readFileSync(path, 'utf-8');
+    return parsers[ext](data);
+  } catch (err) {
+    throw new Error(`Failed to read or parse file: ${err.message}`);
+  }
 };

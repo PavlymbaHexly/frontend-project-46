@@ -1,11 +1,13 @@
 import _ from 'lodash';
+import stylish from './stylish.js';
 
 export const mergeKeys = (keys1, keys2) => _.uniq([...keys1, ...keys2]).sort();
 
 export const indent = (it, left = 0, i = 4) => ' '.repeat(Math.max(it * i - left, 0));
 
 export const printDiff = (key, value, it, sign) => {
-  process.stdout.write(`${indent(it, 2)}${sign} ${key}: ${_.isObject(value) ? '' : value}\n`);
+  const outputValue = _.isObject(value) && !Array.isArray(value) ? '' : value;
+  process.stdout.write(`${indent(it, 2)}${sign} ${key}: ${outputValue}\n`);
   if (_.isObject(value)) genDiff(value, value, it + 1);
 };
 
@@ -13,26 +15,32 @@ export const genDiff = (data1, data2, it = 1) => {
   const keys1 = Object.keys(data1);
   const keys2 = Object.keys(data2);
   const mergedKeys = mergeKeys(keys1, keys2);
-  const indentLevel = indent(it, 2);
 
-  process.stdout.write('{\n');
+  const result = [];
+
   mergedKeys.forEach((key) => {
     if (keys1.includes(key) && keys2.includes(key)) {
       if (_.isObject(data1[key]) && _.isObject(data2[key])) {
-        process.stdout.write(`${indentLevel}  ${key}: {\n`);
-        genDiff(data1[key], data2[key], it + 1);
-        process.stdout.write(`${indent(it)}  }\n`);
+        result.push({
+          key,
+          type: 'nested',
+          children: genDiff(data1[key], data2[key], it + 1),
+        });
       } else if (data1[key] === data2[key]) {
-        process.stdout.write(`${indentLevel}  ${key}: ${data1[key]}\n`);
+        result.push({ key, value: data1[key], type: 'unchanged' });
       } else {
-        printDiff(key, data1, it, '-');
-        printDiff(key, data2, it, '+');
+        result.push({
+          key,
+          value: { oldValue: data1[key], newValue: data2[key] },
+          type: 'changed',
+        });
       }
     } else if (keys1.includes(key)) {
-      printDiff(key, data1, it, '-');
+      result.push({ key, value: data1[key], type: 'removed' });
     } else if (keys2.includes(key)) {
-      printDiff(key, data2, it, '+');
+      result.push({ key, value: data2[key], type: 'added' });
     }
   });
-  process.stdout.write(`${indent(it - 1)}}\n`);
+
+  return result;
 };

@@ -1,9 +1,13 @@
-// @ts-check
-
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, jest } from '@jest/globals';
 import { mergeKeys, indent, genDiff } from '../src/index.js';
+
+const __dirname = path.dirname(new URL(import.meta.url).pathname);
+
+// Изменяем пути на директорию __fixtures__
+const file1Path = path.resolve(__dirname, '../__fixtures__/file1.json');
+const file2Path = path.resolve(__dirname, '../__fixtures__/file2.json');
 
 describe('mergeKeys', () => {
   const cases = [
@@ -79,6 +83,57 @@ describe('genDiff', () => {
       },
       expected: [
         '{\n', '    a: 1\n', '    b: {\n', '      - b1: 2\n', '      + b1: 1\n', '        b2: {\n', '          - b21: {\n', '                b212: 5\n', '            }\n', '          + b21: 3\n', '          - b23: 5\n', '          + b23: 4\n', '        }\n', '    }\n', '  - c: 3\n', '  + d: {\n', '      d1: 1\n', '    }\n', '}\n',
+      ],
+    },
+    {
+      description: 'работает с файлами file1.json и file2.json',
+      obj1: JSON.parse(fs.readFileSync(file1Path, 'utf-8')),
+      obj2: JSON.parse(fs.readFileSync(file2Path, 'utf-8')),
+      expected: [
+        '{\n',
+        '  common: {\n',
+        '    + follow: false\n',
+        '      setting1: Value 1\n',
+        '    - setting2: 200\n',
+        '    - setting3: true\n',
+        '    + setting3: null\n',
+        '    + setting4: blah blah\n',
+        '    + setting5: {\n',
+        '          key5: value5\n',
+        '      }\n',
+        '      setting6: {\n',
+        '        doge: {\n',
+        '          - wow: \n',
+        '          + wow: so much\n',
+        '        }\n',
+        '        key: value\n',
+        '      + ops: vops\n',
+        '      }\n',
+        '  }\n',
+        '  group1: {\n',
+        '    - baz: bas\n',
+        '    + baz: bars\n',
+        '      foo: bar\n',
+        '    - nest: {\n',
+        '          key: value\n',
+        '      }\n',
+        '    + nest: str\n',
+        '  }\n',
+        '  - group2: {\n',
+        '        abc: 12345\n',
+        '        deep: {\n',
+        '            id: 45\n',
+        '        }\n',
+        '    }\n',
+        '  + group3: {\n',
+        '        deep: {\n',
+        '            id: {\n',
+        '                number: 45\n',
+        '            }\n',
+        '        }\n',
+        '        fee: 100500\n',
+        '    }\n',
+        '}\n',
       ],
     },
   ];
