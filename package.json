@@ -4,27 +4,27 @@
     "description": "[![Actions Status](https://github.com/PavlymbaHexly/frontend-project-46/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/PavlymbaHexly/frontend-project-46/actions)",
     "main": "bin/gendiff.js",
     "scripts": {
-      "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",
     "license": "ISC",
     "type": "module",
     "bin": {
-      "gendiff": "bin/gendiff.js"
+        "gendiff": "bin/gendiff.js"
     },
     "dependencies": {
-      "@jest/globals": "^29.7.0",
-      "commander": "^12.0.0",
-      "fs": "^0.0.1-security",
-      "jest": "^29.7.0",
-      "js-yaml": "^4.1.0",
-      "lodash": "^4.17.21"
+        "@jest/globals": "^29.7.0",
+        "commander": "^12.0.0",
+        "fs": "^0.0.1-security",
+        "jest": "^29.7.0",
+        "js-yaml": "^4.1.0",
+        "lodash": "^4.17.21"
     },
     "devDependencies": {
-      "@eslint/js": "^9.2.0",
-      "eslint": "^8.57.0",
-      "eslint-config-airbnb-base": "^15.0.0",
-      "eslint-plugin-import": "^2.29.1",
-      "globals": "^15.2.0"
+        "@eslint/js": "^9.2.0",
+        "eslint": "^8.57.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-plugin-import": "^2.29.1",
+        "globals": "^15.2.0"
     }
-  }
+}

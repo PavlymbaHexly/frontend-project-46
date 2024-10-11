@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import yaml from 'js-yaml';
 
 const parsers = {
@@ -7,16 +6,10 @@ const parsers = {
   '.yaml': yaml.load,
 };
 
-export const parseData = (path) => {
-  const ext = Object.keys(parsers).find(ext => path.endsWith(ext));
-  if (!ext) {
-    throw new Error('Unsupported file extension');
-  }
-
-  try {
-    const data = readFileSync(path, 'utf-8');
-    return parsers[ext](data);
-  } catch (err) {
-    throw new Error(`Failed to read or parse file: ${err.message}`);
-  }
+const parseToJSObject = (data, extention) => {
+  const parse = parsers[extention];
+  if (!parse) throw new Error('Attention! This file format is not supported!');
+  return parse(data);
 };
+
+export default parseToJSObject;

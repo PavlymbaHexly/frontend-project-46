@@ -1,7 +1,3 @@
-follow: true
-host: hexlet.io
-timeout: 20
-verbose: true
 common:
   follow: false
   setting1: Value 1
