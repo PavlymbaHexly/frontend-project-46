@@ -15,34 +15,34 @@ const expectedNested = readFile('expectDiffStylish.txt').trim();
 const expectedPlain = readFile('expectDiffPlain.txt').trim();
 const expectedJson = readFile('expectedDiffJson.txt').trim();
 
-test('test_1: check throw new Error: Attention! This file format is not supported!', () => {
-  expect(() => renderResult('file1.json', 'filepath.wrong')).toThrow('Attention! This file format is not supported!');
+test('тест_1: проверка выбрасывания ошибки: Внимание! Этот формат файла не поддерживается!', () => {
+  expect(() => renderResult('file1.json', 'filepath.wrong')).toThrow('Внимание! Этот формат файла не поддерживается!');
 });
 
-test('test_2: nested lines difference from .json\'s formats', () => {
+test('тест_2: разница в вложенных строках от форматов .json', () => {
   expect(renderResult('file1.json', 'file2.json')).toEqual(expectedNested);
 });
 
-test('test_3: nested lines difference from .yml\'s formats', () => {
+test('тест_3: разница в вложенных строках от форматов .yml', () => {
   expect(renderResult('filepath1.yml', 'filepath2.yml')).toEqual(expectedNested);
 });
 
-test('test_4: nested lines difference from .yml && .json formats', () => {
+test('тест_4: разница в вложенных строках от форматов .yml и .json', () => {
   expect(renderResult('filepath1.yml', 'file2.json')).toEqual(expectedNested);
 });
 
-test('test_5: plain lines difference from .json\'s formats', () => {
+test('тест_5: разница в строках формата plain от форматов .json', () => {
   expect(renderResult('file1.json', 'file2.json', 'plain')).toEqual(expectedPlain);
 });
 
-test('test_6: plain lines difference from in .yml\'s formats', () => {
+test('тест_6: разница в строках формата plain от форматов .yml', () => {
   expect(renderResult('filepath1.yml', 'filepath2.yml', 'plain')).toEqual(expectedPlain);
 });
 
-test('test_7: plain lines difference from .yml && .json formats', () => {
+test('тест_7: разница в строках формата plain от форматов .yml и .json', () => {
   expect(renderResult('file1.json', 'filepath2.yml', 'plain')).toEqual(expectedPlain);
 });
 
-test('test_8: JSON lines difference from .yaml && .json formats', () => {
+test('тест_8: разница в строках формата JSON от форматов .yaml и .json', () => {
   expect(renderResult('filepath1.yml', 'file2.json', 'json')).toEqual(expectedJson);
 });

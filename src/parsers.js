@@ -8,7 +8,7 @@ const parsers = {
 
 const parseToJSObject = (data, extention) => {
   const parse = parsers[extention];
-  if (!parse) throw new Error('Attention! This file format is not supported!');
+  if (!parse) throw new Error('Внимание! Этот формат файла не поддерживается!');
   return parse(data);
 };
 
