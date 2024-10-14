@@ -6,10 +6,10 @@ const getTree = (obj1, obj2) => {
   return keys.map((key) => {
     const hasKeyInObj1 = _.has(obj1, key);
     const hasKeyInObj2 = _.has(obj2, key);
-    const areBothObjects = _.isObject(obj1[key]) && _.isObject(obj2[key]) 
+    const areBothObjects = _.isObject(obj1[key]) && _.isObject(obj2[key])
       && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key]);
 
-    let result = { key };
+    const result = { key };
 
     if (hasKeyInObj1 && hasKeyInObj2 && areBothObjects) {
       result.value = getTree(obj1[key], obj2[key]);
@@ -32,6 +32,5 @@ const getTree = (obj1, obj2) => {
     return result;
   });
 };
-
 
 export default getTree;
