@@ -10,7 +10,7 @@ const __dirname = dirname(__filename);
 const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
 const renderResult = (file1, file2, format = 'stylish') => genDiff(getFixturePath(file1), getFixturePath(file2), format);
 
-const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf+8');
+const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
 const expectedNested = readFile('expectDiffStylish.txt').trim();
 const expectedPlain = readFile('expectDiffPlain.txt').trim();
 const expectedJson = readFile('expectedDiffJson.txt').trim();
