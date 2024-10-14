@@ -9,27 +9,44 @@ const getTree = (obj1, obj2) => {
     const areBothObjects = _.isObject(obj1[key]) && _.isObject(obj2[key])
       && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key]);
 
-    const result = { key };
-
     if (hasKeyInObj1 && hasKeyInObj2 && areBothObjects) {
-      result.value = getTree(obj1[key], obj2[key]);
-      result.type = 'nested';
-    } else if (hasKeyInObj1 && hasKeyInObj2 && _.isEqual(obj1[key], obj2[key])) {
-      result.value = obj1[key];
-      result.type = 'unchanged';
-    } else if (!hasKeyInObj2) {
-      result.value = obj1[key];
-      result.type = 'deleted';
-    } else if (!hasKeyInObj1) {
-      result.value = obj2[key];
-      result.type = 'added';
-    } else {
-      result.valueDeleted = obj1[key];
-      result.valueAdded = obj2[key];
-      result.type = 'changed';
+      return {
+        key,
+        value: getTree(obj1[key], obj2[key]),
+        type: 'nested',
+      };
     }
 
-    return result;
+    if (hasKeyInObj1 && hasKeyInObj2 && _.isEqual(obj1[key], obj2[key])) {
+      return {
+        key,
+        value: obj1[key],
+        type: 'unchanged',
+      };
+    }
+
+    if (!hasKeyInObj2) {
+      return {
+        key,
+        value: obj1[key],
+        type: 'deleted',
+      };
+    }
+
+    if (!hasKeyInObj1) {
+      return {
+        key,
+        value: obj2[key],
+        type: 'added',
+      };
+    }
+
+    return {
+      key,
+      valueDeleted: obj1[key],
+      valueAdded: obj2[key],
+      type: 'changed',
+    };
   });
 };
 
