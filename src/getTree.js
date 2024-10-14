@@ -9,7 +9,7 @@ const getTree = (obj1, obj2) => {
     const areBothObjects = _.isObject(obj1[key]) && _.isObject(obj2[key])
       && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key]);
 
-    // Создаем объект результата с использованием Object.assign для предотвращения переназначения
+    // Создаем новый объект результата без переназначения
     const result = { key };
 
     // Условие для вложенных объектов
