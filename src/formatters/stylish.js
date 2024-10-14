@@ -12,7 +12,9 @@ const stringify = (value, depth) => {
 
 const stylish = (diffTree, depth = 0) => {
   const iter = (node, currentDepth) => node.map((item) => {
-    const { key, value, type, children } = item;
+    const {
+      key, value, type, children,
+    } = item;
     const indent = getIndent(currentDepth);
 
     switch (type) {

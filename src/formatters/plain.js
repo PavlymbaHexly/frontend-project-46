@@ -1,8 +1,18 @@
 import _ from 'lodash';
 
-const outputValue = (value) => (_.isObject(value) ? '[complex value]' : _.isString(value) ? `'${value}'` : value);
+const outputValue = (value) => {
+  if (_.isObject(value)) {
+    return '[complex value]';
+  }
+  if (_.isString(value)) {
+    return `'${value}'`;
+  }
+  return value;
+};
 
-const getLines = (data, path = '') => data.reduce((acc, { key, type, value, valueDeleted, valueAdded }) => {
+const getLines = (data, path = '') => data.reduce((acc, {
+  key, type, value, valueDeleted, valueAdded,
+}) => {
   const fullPath = `${path}${key}.`;
 
   switch (type) {

@@ -4,10 +4,10 @@ import path, { dirname } from 'path';
 import fs from 'fs';
 import genDiff from '../src/index.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const currentFilename = fileURLToPath(import.meta.url);
+const currentDir = dirname(currentFilename);
 
-const getFixturePath = (filename) => path.join(__dirname, '..', '__fixtures__', filename);
+const getFixturePath = (filename) => path.join(currentDir, '..', '__fixtures__', filename);
 const renderResult = (file1, file2, format = 'stylish') => genDiff(getFixturePath(file1), getFixturePath(file2), format);
 
 const readFile = (filename) => fs.readFileSync(getFixturePath(filename), 'utf-8');
@@ -15,8 +15,8 @@ const expectedNested = readFile('expectDiffStylish.txt').trim();
 const expectedPlain = readFile('expectDiffPlain.txt').trim();
 const expectedJson = readFile('expectedDiffJson.txt').trim();
 
-test('тест_1: проверка выбрасывания ошибки: Внимание! Этот формат файла не поддерживается!', () => {
-  expect(() => renderResult('file1.json', 'filepath.wrong')).toThrow('Внимание! Этот формат файла не поддерживается!');
+test('тест_1: Внимание! Этот формат файла не поддерживается!', () => {
+  expect(() => renderResult('file1.json', 'filepath.wrong')).toThrow('Внимание! Этот формат файла не поддерживается');
 });
 
 test('тест_2: разница в вложенных строках от форматов .json', () => {
