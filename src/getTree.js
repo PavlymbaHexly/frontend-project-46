@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 const getTree = (obj1, obj2) => {
-  const keys = _.uniq([...Object.keys(obj1), ...Object.keys(obj2)]).sort();
+  const keys = _.uniq([...Object.keys(obj1), ...Object.keys(obj2)]).slice().sort();
 
   return keys.map((key) => {
     const hasKeyInObj1 = _.has(obj1, key);
