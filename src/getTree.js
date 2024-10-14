@@ -1,58 +1,28 @@
 import _ from 'lodash';
 
 const getTree = (obj1, obj2) => {
-  const keys = _.sortBy(_.uniq([...Object.keys(obj1), ...Object.keys(obj2)]));
+  const keys = _.uniq([...Object.keys(obj1), ...Object.keys(obj2)]).sort();
 
   return keys.map((key) => {
     const hasKeyInObj1 = _.has(obj1, key);
     const hasKeyInObj2 = _.has(obj2, key);
-    const areBothObjects = _.isObject(obj1[key]) && _.isObject(obj2[key])
-      && !Array.isArray(obj1[key]) && !Array.isArray(obj2[key]);
+    const value1 = obj1[key];
+    const value2 = obj2[key];
 
-    // Создаем новый объект результата
-    const result = {
-      key,
-      value: undefined,
-      type: undefined,
-    };
-
-    // Условие для вложенных объектов
-    if (hasKeyInObj1 && hasKeyInObj2 && areBothObjects) {
-      return {
-        ...result,
-        value: getTree(obj1[key], obj2[key]),
-        type: 'nested',
-      };
-    }
-    if (hasKeyInObj1 && hasKeyInObj2 && _.isEqual(obj1[key], obj2[key])) {
-      return {
-        ...result,
-        value: obj1[key],
-        type: 'unchanged',
-      };
-    }
-    if (!hasKeyInObj2) {
-      return {
-        ...result,
-        value: obj1[key],
-        type: 'deleted',
-      };
-    }
-    if (!hasKeyInObj1) {
-      return {
-        ...result,
-        value: obj2[key],
-        type: 'added',
-      };
+    if (hasKeyInObj1 && hasKeyInObj2) {
+      if (_.isObject(value1) && _.isObject(value2)
+       && !Array.isArray(value1) && !Array.isArray(value2)) {
+        return { key, value: getTree(value1, value2), type: 'nested' };
+      }
+      if (!_.isEqual(value1, value2)) {
+        return {
+          key, valueDeleted: value1, valueAdded: value2, type: 'changed',
+        };
+      }
+      return { key, value: value1, type: 'unchanged' };
     }
 
-    // Случай, когда значения изменились
-    return {
-      ...result,
-      valueDeleted: obj1[key],
-      valueAdded: obj2[key],
-      type: 'changed',
-    };
+    return { key, value: hasKeyInObj1 ? value1 : value2, type: hasKeyInObj1 ? 'deleted' : 'added' };
   });
 };
 
