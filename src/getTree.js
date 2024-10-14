@@ -1,5 +1,20 @@
 import _ from 'lodash';
 
+const getTree = (obj1, obj2) => {
+  const keys = _.sortBy(_.uniq([...Object.keys(obj1), ...Object.keys(obj2)]));
+
+  return keys.map((key) => {
+    const type = getType(key, obj1, obj2);
+    const value = getValue(key, obj1, obj2, type);
+
+    return {
+      key,
+      ...(typeof value === 'object' ? value : { value }),
+      type,
+    };
+  });
+};
+
 const getType = (key, obj1, obj2) => {
   const hasKeyInObj1 = _.has(obj1, key);
   const hasKeyInObj2 = _.has(obj2, key);
@@ -46,21 +61,6 @@ const getValue = (key, obj1, obj2, type) => {
     valueDeleted: obj1[key],
     valueAdded: obj2[key],
   };
-};
-
-const getTree = (obj1, obj2) => {
-  const keys = _.sortBy(_.uniq([...Object.keys(obj1), ...Object.keys(obj2)]));
-
-  return keys.map((key) => {
-    const type = getType(key, obj1, obj2);
-    const value = getValue(key, obj1, obj2, type);
-
-    return {
-      key,
-      ...(typeof value === 'object' ? value : { value }),
-      type,
-    };
-  });
 };
 
 export default getTree;
