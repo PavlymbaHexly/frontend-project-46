@@ -25,10 +25,9 @@ export const createDiff = (data1, data2) => {
     const isKeyInData1 = keys1.includes(key);
     const isKeyInData2 = keys2.includes(key);
 
-    // Создаем новый объект для накопления изменений
-    let newAdded = { ...acc.added };
-    let newRemoved = { ...acc.removed };
-    let newCommon = { ...acc.common };
+    const newAdded = { ...acc.added };
+    const newRemoved = { ...acc.removed };
+    const newCommon = { ...acc.common };
 
     if (isKeyInData1 && isKeyInData2) {
       if (_.isObject(data1[key]) && _.isObject(data2[key])) {
@@ -45,7 +44,6 @@ export const createDiff = (data1, data2) => {
       newAdded[key] = data2[key];
     }
 
-    // Возвращаем новый объект без мутации
     return {
       added: newAdded,
       removed: newRemoved,
