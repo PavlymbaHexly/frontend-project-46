@@ -1,3 +1,3 @@
-const getJsonView = (difTree) => JSON.stringify(difTree, null, ' ');
+const json = (diff) => JSON.stringify(diff, null, 2);
 
-export default getJsonView;
+export default json;

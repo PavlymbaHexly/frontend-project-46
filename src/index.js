@@ -1,20 +1,21 @@
-import path from 'path';
-import fs from 'fs';
-import resultConclusion from './formatters/index.js';
-import parsers from './parsers.js';
-import getTree from './getTree.js';
+import { parseData } from './parsers.js';
+import format from './formatters/index.js';
 
-const getAbsolutePath = (filepath) => path.resolve(process.cwd(), filepath);
+const genDiff = (filepath1, filepath2, formatter) => {
+  try {
+    const data1 = parseData(filepath1);
+    const data2 = parseData(filepath2);
 
-const parseFile = (filepath) => {
-  const data = fs.readFileSync(filepath, 'utf-8');
-  return parsers(data, path.extname(filepath));
-};
+    if (data1 === null || data2 === null) {
+      console.error('Error processing files: wrong extension or unsupported file type');
+      return false;
+    }
 
-const genDiff = (filepath1, filepath2, format) => {
-  const obj1 = parseFile(getAbsolutePath(filepath1));
-  const obj2 = parseFile(getAbsolutePath(filepath2));
-  return resultConclusion(getTree(obj1, obj2), format);
+    return format(data1, data2, formatter);
+  } catch (error) {
+    console.error('Error processing files:', error.message);
+    return false;
+  }
 };
 
 export default genDiff;

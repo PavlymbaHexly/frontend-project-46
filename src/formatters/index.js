@@ -1,10 +1,18 @@
-import stylish from './stylish.js';
-import plain from './plain.js';
+import { stylish } from './stylish.js';
+import { plain } from './plain.js';
 import json from './json.js';
+import { createDiff } from '../utility.js';
 
-const resultConclusion = (difTree, format = 'stylish') => {
-  const formatters = { plain, stylish, json };
-  return formatters[format](difTree);
+const format = (data1, data2, formatter) => {
+  const diff = createDiff(data1, data2);
+  switch (formatter) {
+    case 'json':
+      return json(diff);
+    case 'plain':
+      return plain(diff).trim();
+    default:
+      return stylish(diff);
+  }
 };
 
-export default resultConclusion;
+export default format;

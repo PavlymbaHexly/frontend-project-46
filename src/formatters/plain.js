@@ -1,34 +1,41 @@
 import _ from 'lodash';
+import { mergeDiffKeys } from '../utility.js';
 
-const outputValue = (value) => {
+const complexValue = (value) => {
   if (_.isObject(value)) {
     return '[complex value]';
   }
-  if (_.isString(value)) {
-    return `'${value}'`;
-  }
-  return value;
+  return typeof value === 'string' ? `'${value}'` : `${value}`;
 };
 
-const getLines = (data, path = '') => data.reduce((acc, {
-  key, type, value, valueDeleted, valueAdded,
-}) => {
-  const fullPath = `${path}${key}.`;
+export const plain = (diff, path = '') => {
+  const keys = mergeDiffKeys(diff);
 
-  switch (type) {
-    case 'nested':
-      return `${acc}${getLines(value, fullPath)}`;
-    case 'added':
-      return `${acc}Property '${fullPath.slice(0, -1)}' was added with value: ${outputValue(value)}\n`;
-    case 'deleted':
-      return `${acc}Property '${fullPath.slice(0, -1)}' was removed\n`;
-    case 'changed':
-      return `${acc}Property '${fullPath.slice(0, -1)}' was updated. From ${outputValue(valueDeleted)} to ${outputValue(valueAdded)}\n`;
-    default:
-      return acc;
-  }
-}, '');
+  return keys.reduce((result, key) => {
+    const currentPath = path ? `${path}.${key}` : key;
 
-const getPlainFormat = (difTree) => getLines(difTree).trim();
+    const hasAdded = key in diff.added;
+    const hasRemoved = key in diff.removed;
+    const hasCommon = key in diff.common;
 
-export default getPlainFormat;
+    if (hasAdded && hasRemoved) {
+      return `${result}Property '${currentPath}' was updated. From ${complexValue(diff.removed[key])} to ${complexValue(diff.added[key])}\n`;
+    }
+
+    if (hasCommon && _.isObject(diff.common[key])) {
+      return result + plain(diff.common[key], currentPath);
+    }
+
+    if (hasRemoved) {
+      return `${result}Property '${currentPath}' was removed\n`;
+    }
+
+    if (hasAdded) {
+      return `${result}Property '${currentPath}' was added with value: ${complexValue(diff.added[key])}\n`;
+    }
+
+    return result;
+  }, '');
+};
+
+export default plain;

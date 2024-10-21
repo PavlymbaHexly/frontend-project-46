@@ -1,47 +1,37 @@
 import _ from 'lodash';
+import { indent, mergeDiffKeys } from '../utility.js';
 
-const getIndent = (depth, count = 2) => ' '.repeat(depth * 4 - count);
-const signOfDiffer = {
-  nested: '  ',
-  unchanged: '  ',
-  deleted: '- ',
-  added: '+ ',
-};
+export const stylish = (diff, depth = 1) => {
+  const formatValue = (value, currentDepth) => {
+    if (!_.isObject(value)) {
+      return value;
+    }
 
-const stringify = (currentValue, depth) => {
-  if (!_.isObject(currentValue)) {
-    return String(currentValue);
-  }
-  const lines = Object.entries(currentValue).map(
-    ([key, value]) => `${getIndent(depth)}${signOfDiffer.unchanged}${key}: ${stringify(value, depth + 1)}`,
-  );
-  return ['{', ...lines, `${getIndent(depth, 4)}}`].join('\n');
-};
+    const keys = Object.keys(value);
+    const indentSpace = indent(currentDepth + 1);
 
-const formatValue = (obj, depth) => `${getIndent(depth)}${signOfDiffer[obj.type]}${obj.key}: ${stringify(obj.value, depth + 1)}`;
-
-const stylish = (difTree) => {
-  const getRender = (treeAST, depth = 1) => {
-    const lines = treeAST.map((obj) => {
-      switch (obj.type) {
-        case 'nested':
-          return `${getIndent(depth)}${signOfDiffer[obj.type]}${obj.key}: ${getRender(obj.value, depth + 1)}`;
-        case 'unchanged':
-        case 'deleted':
-        case 'added':
-          return formatValue(obj, depth);
-        case 'changed': {
-          const deleteValue = formatValue({ ...obj, type: 'deleted', value: obj.valueDeleted }, depth);
-          const addedValue = formatValue({ ...obj, type: 'added', value: obj.valueAdded }, depth);
-          return `${deleteValue}\n${addedValue}`;
-        }
-        default:
-          return '';
-      }
-    });
-    return ['{', ...lines, `${getIndent(depth, 4)}}`].join('\n');
+    return `{\n${keys.map((key) => `${indentSpace}  ${key}: ${formatValue(value[key], currentDepth + 1)}`).join('\n')}\n${indent(currentDepth)}}`;
   };
-  return getRender(difTree);
+
+  const iter = (currentDiff, currentDepth) => {
+    const keys = mergeDiffKeys(currentDiff);
+
+    return keys.map((key) => {
+      const indentSpace = indent(currentDepth);
+      if (key in currentDiff.added && key in currentDiff.removed) {
+        return `${indentSpace}- ${key}: ${formatValue(currentDiff.removed[key], currentDepth)}\n${indentSpace}+ ${key}: ${formatValue(currentDiff.added[key], currentDepth)}`;
+      }
+      if (key in currentDiff.removed) {
+        return `${indentSpace}- ${key}: ${formatValue(currentDiff.removed[key], currentDepth)}`;
+      }
+      if (key in currentDiff.added) {
+        return `${indentSpace}+ ${key}: ${formatValue(currentDiff.added[key], currentDepth)}`;
+      }
+      return `${indentSpace}  ${key}: ${formatValue(currentDiff.common[key], currentDepth + 1)}`; // Измените currentDepth на currentDepth + 1
+    }).join('\n');
+  };
+
+  return `{\n${iter(diff, depth)}\n${indent(depth - 1)}}`;
 };
 
 export default stylish;
