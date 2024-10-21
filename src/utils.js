@@ -1,18 +1,17 @@
 import _ from 'lodash';
 
 export const indent = (it, left = 0, i = 4) => {
-  const repeats = it * i - left;
-  return repeats > 0 ? ' '.repeat(repeats) : '';
+  const repeats = Math.max(it * i - left, 0);
+  return ' '.repeat(repeats);
 };
 
-export const mergeKeys = (keys1, keys2) => _.sortBy([...new Set([...keys1, ...keys2])]);
+export const mergeKeys = (keys1, keys2) => {
+  const merged = [...new Set([...keys1, ...keys2])];
+  return _.sortBy(merged);
+};
 
 export const mergeDiffKeys = (diff) => {
-  const merged = new Set([
-    ...Object.keys(diff.added),
-    ...Object.keys(diff.removed),
-    ...Object.keys(diff.common),
-  ]);
+  const merged = new Set([...Object.keys(diff.added), ...Object.keys(diff.removed), ...Object.keys(diff.common)]);
   return _.sortBy([...merged]);
 };
 
@@ -21,38 +20,52 @@ export const createDiff = (data1, data2) => {
   const keys2 = Object.keys(data2);
   const mergedKeys = _.sortBy([...new Set([...keys1, ...keys2])]);
 
-  return mergedKeys.reduce((acc, key) => {
-    const isKeyInData1 = keys1.includes(key);
-    const isKeyInData2 = keys2.includes(key);
+  return mergedKeys.reduce((diff, key) => {
+    const commonValue1 = data1[key];
+    const commonValue2 = data2[key];
 
-    const newAcc = {
-      added: { ...acc.added },
-      removed: { ...acc.removed },
-      common: { ...acc.common },
-    };
-
-    if (isKeyInData1 && isKeyInData2) {
-      if (_.isObject(data1[key]) && _.isObject(data2[key])) {
-        newAcc.common[key] = createDiff(data1[key], data2[key]);
-      } else if (data1[key] === data2[key]) {
-        newAcc.common[key] = data1[key];
-      } else {
-        newAcc.removed[key] = data1[key];
-        newAcc.added[key] = data2[key];
+    if (keys1.includes(key) && keys2.includes(key)) {
+      if (_.isObject(commonValue1) && _.isObject(commonValue2)) {
+        return {
+          added: diff.added,
+          removed: diff.removed,
+          common: {
+            ...diff.common,
+            [key]: createDiff(commonValue1, commonValue2),
+          },
+        };
       }
-    } else if (isKeyInData1) {
-      newAcc.removed[key] = data1[key];
-    } else if (isKeyInData2) {
-      newAcc.added[key] = data2[key];
+
+      if (commonValue1 === commonValue2) {
+        return {
+          added: diff.added,
+          removed: diff.removed,
+          common: {
+            ...diff.common,
+            [key]: commonValue1,
+          },
+        };
+      }
+
+      return {
+        added: { ...diff.added, [key]: commonValue2 },
+        removed: { ...diff.removed, [key]: commonValue1 },
+        common: diff.common,
+      };
     }
 
-    return newAcc;
-  }, { added: {}, removed: {}, common: {} });
-};
+    if (keys1.includes(key)) {
+      return {
+        added: diff.added,
+        removed: { ...diff.removed, [key]: commonValue1 },
+        common: diff.common,
+      };
+    }
 
-export default {
-  indent,
-  mergeKeys,
-  mergeDiffKeys,
-  createDiff,
+    return {
+      added: { ...diff.added, [key]: commonValue2 },
+      removed: diff.removed,
+      common: diff.common,
+    };
+  }, { added: {}, removed: {}, common: {} });
 };
