@@ -25,30 +25,28 @@ export const createDiff = (data1, data2) => {
     const isKeyInData1 = keys1.includes(key);
     const isKeyInData2 = keys2.includes(key);
 
-    const newAdded = isKeyInData1 && isKeyInData2 ? acc.added : { ...acc.added };
-    const newRemoved = isKeyInData1 && isKeyInData2 ? acc.removed : { ...acc.removed };
-    const newCommon = isKeyInData1 && isKeyInData2 ? acc.common : { ...acc.common };
+    const newAcc = {
+      added: { ...acc.added },
+      removed: { ...acc.removed },
+      common: { ...acc.common },
+    };
 
     if (isKeyInData1 && isKeyInData2) {
       if (_.isObject(data1[key]) && _.isObject(data2[key])) {
-        newCommon[key] = createDiff(data1[key], data2[key]);
+        newAcc.common[key] = createDiff(data1[key], data2[key]);
       } else if (data1[key] === data2[key]) {
-        newCommon[key] = data1[key];
+        newAcc.common[key] = data1[key];
       } else {
-        newRemoved[key] = data1[key];
-        newAdded[key] = data2[key];
+        newAcc.removed[key] = data1[key];
+        newAcc.added[key] = data2[key];
       }
     } else if (isKeyInData1) {
-      newRemoved[key] = data1[key];
-    } else {
-      newAdded[key] = data2[key];
+      newAcc.removed[key] = data1[key];
+    } else if (isKeyInData2) {
+      newAcc.added[key] = data2[key];
     }
 
-    return {
-      added: newAdded,
-      removed: newRemoved,
-      common: newCommon,
-    };
+    return newAcc;
   }, { added: {}, removed: {}, common: {} });
 };
 
