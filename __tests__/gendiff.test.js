@@ -8,7 +8,7 @@ import path from 'node:path';
 import {
   mergeKeys, indent, mergeDiffKeys, createDiff,
 } from '../src/utils.js';
-import genDiff from '../src/diff.js';
+import genDiff from '../src/index.js';
 import { parseJSONData, parseYAMLData, parseData } from '../src/parsers.js';
 
 const __filename = fileURLToPath(import.meta.url);
