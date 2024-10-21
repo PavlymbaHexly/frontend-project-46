@@ -17,7 +17,7 @@
 [![deepjsondiff](https://asciinema.org/a/dMLlmQGd6gdbBOxNCIZBcbgdN.svg)](https://asciinema.org/a/dMLlmQGd6gdbBOxNCIZBcbgdN)
 
 ### deep json files diff (plain)
-[![deepfilesplain(https://asciinema.org/a/MkN1tPP9QXpvtp0807Ev5wd3e.svg)](https://asciinema.org/a/MkN1tPP9QXpvtp0807Ev5wd3e)
+[![deepfilesplain](https://asciinema.org/a/MkN1tPP9QXpvtp0807Ev5wd3e.svg)](https://asciinema.org/a/MkN1tPP9QXpvtp0807Ev5wd3e)
 
 ### deep json files diff (json)
 [![deepfilesjson](https://asciinema.org/a/SnKqG7ZFU4djKPRwzKuf7e8pA.svg)](https://asciinema.org/a/SnKqG7ZFU4djKPRwzKuf7e8pA)
