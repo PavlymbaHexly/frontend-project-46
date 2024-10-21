@@ -12,7 +12,7 @@ export const mergeKeys = (keys1, keys2) => {
 
 export const mergeDiffKeys = (diff) => {
   const merged = new Set([...Object.keys(diff.added),
-     ...Object.keys(diff.removed), ...Object.keys(diff.common)]);
+    ...Object.keys(diff.removed), ...Object.keys(diff.common)]);
   return _.sortBy([...merged]);
 };
 
