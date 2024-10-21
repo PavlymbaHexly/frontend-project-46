@@ -1,4 +1,4 @@
-// @ts-check
+/// @ts-check
 
 // import { jest } from '@jest/globals';
 import { describe, expect, it } from '@jest/globals';
@@ -153,12 +153,12 @@ describe('genDiff', () => {
   it('Выводит false в случае неправильного расширения файла', () => {
     const diff1 = genDiff('__fixtures__/file1.json', '__fixtures__/file2.json', 'stylish');
     expect(diff1).toBeTruthy();
-
     const diff2 = genDiff('__fixtures__/file1.yml', '__fixtures__/file2.yml', 'json');
     expect(diff2).toBeTruthy();
-
     const diff3 = genDiff('__fixtures__/file1.csgo', '__fixtures__/file2.csgo', 'plain');
     expect(diff3).toBeFalsy();
+    const diff4 = genDiff('__fixtures__/file1.json', '__fixtures__/file2.json', 'plain');
+    expect(diff4).toBeTruthy();
   });
 });
 

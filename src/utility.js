@@ -2,26 +2,28 @@ import _ from 'lodash';
 
 export const indent = (it, left = 0, i = 4) => {
   const repeats = it * i - left;
-  return repeats >= 0 ? ' '.repeat(repeats) : '';
+  return repeats > 0 ? ' '.repeat(repeats) : '';
 };
 
 export const mergeKeys = (keys1, keys2) => {
-  const merged = [...new Set([...keys1, ...keys2])];
-  return _.sortBy(merged);
+  return _.sortBy([...new Set([...keys1, ...keys2])]);
 };
 
 export const mergeDiffKeys = (diff) => {
-  const merged = [...new Set(Object.keys({ ...diff.added, ...diff.removed, ...diff.common }))];
-  return _.sortBy(merged);
+  const merged = new Set([...Object.keys(diff.added), ...Object.keys(diff.removed), ...Object.keys(diff.common)]);
+  return _.sortBy([...merged]);
 };
 
 export const createDiff = (data1, data2) => {
   const keys1 = Object.keys(data1);
   const keys2 = Object.keys(data2);
-  const mergedKeys = mergeDiffKeys({ added: data2, removed: data1, common: {} });
+  const mergedKeys = _.sortBy([...new Set([...keys1, ...keys2])]);
 
   return mergedKeys.reduce((diff, key) => {
-    if (keys1.includes(key) && keys2.includes(key)) {
+    const isKeyInData1 = keys1.includes(key);
+    const isKeyInData2 = keys2.includes(key);
+
+    if (isKeyInData1 && isKeyInData2) {
       if (_.isObject(data1[key]) && _.isObject(data2[key])) {
         return {
           ...diff,
@@ -30,8 +32,7 @@ export const createDiff = (data1, data2) => {
             [key]: createDiff(data1[key], data2[key]),
           },
         };
-      }
-      if (data1[key] === data2[key]) {
+      } else if (data1[key] === data2[key]) {
         return {
           ...diff,
           common: {
@@ -51,8 +52,7 @@ export const createDiff = (data1, data2) => {
           [key]: data2[key],
         },
       };
-    }
-    if (keys1.includes(key)) {
+    } else if (isKeyInData1) {
       return {
         ...diff,
         removed: {
@@ -70,3 +70,5 @@ export const createDiff = (data1, data2) => {
     };
   }, { added: {}, removed: {}, common: {} });
 };
+
+export default { indent, mergeKeys, mergeDiffKeys, createDiff };

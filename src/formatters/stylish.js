@@ -1,40 +1,55 @@
 import _ from 'lodash';
+import { mergeDiffKeys, indent } from '../utility.js';
 
-const getIndent = (depth) => ' '.repeat(depth * 4);
-
-const formatValue = (value, depth) => {
-  if (!_.isObject(value)) {
-    return value;
+export const printDiff = (key, value, sign, it) => {
+  if (_.isObject(value)) {
+    const keys = Object.keys(value);
+    return `${indent(it, 2)}${sign} ${key}: {\n${
+      keys.map((key1) => {
+        if (_.isObject(value[key1])) {
+          return printDiff(key1, value[key], ' ', it + 1);
+        }
+        return `${indent(it + 1, 2)}  ${key1}: ${value[key1]}`;
+      }).join('')
+    }\n${indent(it)}}`;
   }
-  const keys = Object.keys(value);
-  const indent = getIndent(depth + 1);
-  const lines = keys.map((key) => `${indent}${key}: ${formatValue(value[key], depth + 1)}`);
-  return `{\n${lines.join('\n')}\n${getIndent(depth)}}`;
+  return `${indent(it, 2)}${sign} ${key}: ${value}`;
 };
 
-export const stylish = (diff, depth = 0) => {
-  const indent = getIndent(depth);
-  const lines = diff.map((node) => {
-    switch (node.status) {
-      case 'added':
-        return `${indent}+ ${node.key}: ${formatValue(node.value, depth)}`;
-      case 'removed':
-        return `${indent}- ${node.key}: ${formatValue(node.value, depth)}`;
-      case 'unchanged':
-        return `${indent}  ${node.key}: ${formatValue(node.value, depth)}`;
-      case 'nested':
-        return `${indent}  ${node.key}: ${stylish(node.children, depth + 1)}`;
-      case 'changed':
-        return [
-          `${indent}- ${node.key}: ${formatValue(node.oldValue, depth)}`,
-          `${indent}+ ${node.key}: ${formatValue(node.newValue, depth)}`,
-        ].join('\n');
-      default:
-        throw new Error(`Unknown status: ${node.status}`);
+export const isDiffObject = (obj) => {
+  const keys = Object.keys(obj);
+  if (keys.length === 3) {
+    if (keys.includes('added') && keys.includes('removed') && keys.includes('common')) {
+      return true;
+    } return false;
+  } return false;
+};
+
+export const printObjDeep = (obj, it = 0) => {
+  const keys = Object.keys(obj);
+  return keys.map((key) => {
+    if (_.isObject(obj[key])) {
+      return `${indent(it)}${key}: {\n${printObjDeep(obj[key], it + 1)}${indent(it)}}\n`;
     }
-  });
-
-  return `{\n${lines.join('\n')}\n${indent}}`;
+    return `${indent(it)}${key}: ${obj[key]}\n`;
+  }).join('');
 };
 
-export default stylish;
+const printIfObject = (obj, key, sign, it) => (_.isObject(obj[key])
+  ? `${indent(it, 2)}${sign} ${key}: {\n${printObjDeep(obj[key], it + 1)}${indent(it)}}`
+  : printDiff(key, obj[key], sign, it));
+
+export const stylish = (diff, it = 1) => mergeDiffKeys(diff).reduce((accumulator, key) => (
+  accumulator
+      + ((Object.keys(diff.common).includes(key)
+          && (_.isObject(diff.common[key])
+            ? `${printDiff(key, '{', ' ', it)}\n${stylish(diff.common[key], it + 1)}${indent(it)}}\n`
+            : `${printDiff(key, diff.common[key], ' ', it)}\n`
+          )) || '')
+      + (Object.keys(diff.removed).includes(key)
+        ? `${printIfObject(diff.removed, key, '-', it)}\n`
+        : '')
+      + (Object.keys(diff.added).includes(key)
+        ? `${printIfObject(diff.added, key, '+', it)}\n`
+        : '')
+), it === 1 ? '{\n' : '') + (it === 1 ? '}' : '');
