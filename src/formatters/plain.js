@@ -1,36 +1,30 @@
 import _ from 'lodash';
-import { mergeDiffKeys } from '../utility.js';
+import { mergeDiffKeys } from '../utils.js';
 
 const complexValue = (value) => {
-  if (_.isObject(value)) {
-    return '[complex value]';
-  }
+  if (_.isObject(value)) return '[complex value]';
   return typeof value === 'string' ? `'${value}'` : `${value}`;
 };
 
 export const plain = (diff, path = '') => {
   const keys = mergeDiffKeys(diff);
-
   return keys.reduce((result, key) => {
-    const currentPath = path ? `${path}.${key}` : key;
+    const currentPath = `${path}${path ? '.' : ''}${key}`;
 
-    const hasAdded = key in diff.added;
-    const hasRemoved = key in diff.removed;
-    const hasCommon = key in diff.common;
-
-    if (hasAdded && hasRemoved) {
+    if (Object.prototype.hasOwnProperty.call(diff.added, key)
+       && Object.prototype.hasOwnProperty.call(diff.removed, key)) {
       return `${result}Property '${currentPath}' was updated. From ${complexValue(diff.removed[key])} to ${complexValue(diff.added[key])}\n`;
     }
 
-    if (hasCommon && _.isObject(diff.common[key])) {
+    if (_.isObject(diff.common[key])) {
       return result + plain(diff.common[key], currentPath);
     }
 
-    if (hasRemoved) {
+    if (Object.prototype.hasOwnProperty.call(diff.removed, key)) {
       return `${result}Property '${currentPath}' was removed\n`;
     }
 
-    if (hasAdded) {
+    if (Object.prototype.hasOwnProperty.call(diff.added, key)) {
       return `${result}Property '${currentPath}' was added with value: ${complexValue(diff.added[key])}\n`;
     }
 

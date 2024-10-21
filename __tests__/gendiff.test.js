@@ -1,4 +1,4 @@
-/// @ts-check
+// @ts-check
 
 // import { jest } from '@jest/globals';
 import { describe, expect, it } from '@jest/globals';
@@ -7,8 +7,8 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import {
   mergeKeys, indent, mergeDiffKeys, createDiff,
-} from '../src/utility.js';
-import genDiff from '../src/index.js';
+} from '../src/utils.js';
+import genDiff from '../src/diff.js';
 import { parseJSONData, parseYAMLData, parseData } from '../src/parsers.js';
 
 const __filename = fileURLToPath(import.meta.url);
