@@ -25,28 +25,32 @@ export const createDiff = (data1, data2) => {
     const isKeyInData1 = keys1.includes(key);
     const isKeyInData2 = keys2.includes(key);
 
-    const newAcc = {
-      added: { ...acc.added },
-      removed: { ...acc.removed },
-      common: { ...acc.common },
-    };
+    // Создаем новый объект для накопления изменений
+    let newAdded = { ...acc.added };
+    let newRemoved = { ...acc.removed };
+    let newCommon = { ...acc.common };
 
     if (isKeyInData1 && isKeyInData2) {
       if (_.isObject(data1[key]) && _.isObject(data2[key])) {
-        newAcc.common[key] = createDiff(data1[key], data2[key]);
+        newCommon[key] = createDiff(data1[key], data2[key]);
       } else if (data1[key] === data2[key]) {
-        newAcc.common[key] = data1[key];
+        newCommon[key] = data1[key];
       } else {
-        newAcc.removed[key] = data1[key];
-        newAcc.added[key] = data2[key];
+        newRemoved[key] = data1[key];
+        newAdded[key] = data2[key];
       }
     } else if (isKeyInData1) {
-      newAcc.removed[key] = data1[key];
+      newRemoved[key] = data1[key];
     } else {
-      newAcc.added[key] = data2[key];
+      newAdded[key] = data2[key];
     }
 
-    return newAcc;
+    // Возвращаем новый объект без мутации
+    return {
+      added: newAdded,
+      removed: newRemoved,
+      common: newCommon,
+    };
   }, { added: {}, removed: {}, common: {} });
 };
 
