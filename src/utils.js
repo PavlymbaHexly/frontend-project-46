@@ -25,9 +25,9 @@ export const createDiff = (data1, data2) => {
     const isKeyInData1 = keys1.includes(key);
     const isKeyInData2 = keys2.includes(key);
 
-    const newAdded = { ...acc.added };
-    const newRemoved = { ...acc.removed };
-    const newCommon = { ...acc.common };
+    const newAdded = isKeyInData1 && isKeyInData2 ? acc.added : { ...acc.added };
+    const newRemoved = isKeyInData1 && isKeyInData2 ? acc.removed : { ...acc.removed };
+    const newCommon = isKeyInData1 && isKeyInData2 ? acc.common : { ...acc.common };
 
     if (isKeyInData1 && isKeyInData2) {
       if (_.isObject(data1[key]) && _.isObject(data2[key])) {
