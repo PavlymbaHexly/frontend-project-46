@@ -1,18 +1,20 @@
-import { stylish } from './stylish.js';
-import { plain } from './plain.js';
-import json from './json.js';
-import { createDiff } from '../utility.js';
+const formatStylish = (diff) => JSON.stringify(diff, null, 2);
 
-const format = (data1, data2, formatter) => {
-  const diff = createDiff(data1, data2);
-  switch (formatter) {
-    case 'json':
-      return json(diff);
+const formatPlain = (diff) => JSON.stringify(diff, null, 2);
+
+const formatJSON = (diff) => JSON.stringify(diff, null, 2);
+
+const formatDiff = (diff, format) => {
+  switch (format) {
+    case 'stylish':
+      return formatStylish(diff);
     case 'plain':
-      return plain(diff).trim();
+      return formatPlain(diff);
+    case 'json':
+      return formatJSON(diff);
     default:
-      return stylish(diff);
+      throw new Error(`Unknown format: ${format}`);
   }
 };
 
-export default format;
+export default formatDiff;
