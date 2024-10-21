@@ -51,5 +51,8 @@ export const createDiff = (data1, data2) => {
 };
 
 export default {
-  indent, mergeKeys, mergeDiffKeys, createDiff,
+  indent,
+  mergeKeys,
+  mergeDiffKeys,
+  createDiff,
 };
