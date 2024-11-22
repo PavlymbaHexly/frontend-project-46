@@ -5,19 +5,19 @@
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c12dd37a718783f8f817/test_coverage)](https://codeclimate.com/github/PavlymbaHexly/frontend-project-46/test_coverage)
 
 ### INSTALL
-[![install](https://asciinema.org/a/7JZEJYzkFH3BsvgCJ9SSp6FBK.svg)](https://asciinema.org/a/7JZEJYzkFH3BsvgCJ9SSp6FBK)
+[![install](https://asciinema.org/a/691602.svg)](https://asciinema.org/a/691602)
 
 ### json files diff
-[![jsontodiff](https://asciinema.org/a/dxpyiGljjwayxyWX5L2hsDydu.svg)](https://asciinema.org/a/dxpyiGljjwayxyWX5L2hsDydu)
+[![jsontodiff](https://asciinema.org/a/691604.svg)](https://asciinema.org/a/691604)
 
 ### yaml files diff
-[![yamltodiff](https://asciinema.org/a/B5eB2Jf7Adt7E1Ff4CtfDO9Md.svg)](https://asciinema.org/a/B5eB2Jf7Adt7E1Ff4CtfDO9Md)
+[![yamltodiff](https://asciinema.org/a/691607.svg)](https://asciinema.org/a/691607)
 
 ### deep json files diff
-[![deepjsondiff](https://asciinema.org/a/dMLlmQGd6gdbBOxNCIZBcbgdN.svg)](https://asciinema.org/a/dMLlmQGd6gdbBOxNCIZBcbgdN)
+[![deepjsontodiff](https://asciinema.org/a/691606.svg)](https://asciinema.org/a/691606)
 
 ### deep json files diff (plain)
-[![deepfilesplain](https://asciinema.org/a/MkN1tPP9QXpvtp0807Ev5wd3e.svg)](https://asciinema.org/a/MkN1tPP9QXpvtp0807Ev5wd3e)
+[![deepfilesplain](https://asciinema.org/a/691609.svg)](https://asciinema.org/a/691609)
 
 ### deep json files diff (json)
-[![deepfilesjson](https://asciinema.org/a/SnKqG7ZFU4djKPRwzKuf7e8pA.svg)](https://asciinema.org/a/SnKqG7ZFU4djKPRwzKuf7e8pA)
+[![deepfilesjson](https://asciinema.org/a/691610.svg)](https://asciinema.org/a/691610)
